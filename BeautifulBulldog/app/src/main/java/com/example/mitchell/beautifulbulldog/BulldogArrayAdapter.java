@@ -39,8 +39,11 @@ public class BulldogArrayAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         View rowView = mInflater.inflate(R.layout.bulldog_cell, parent, false);
 
-        TextView name = rowView.findViewById(R.id.name_label);
+        TextView name = (TextView) rowView.findViewById(R.id.name_label);
         name.setText(getItem(position).getName());
+
+        TextView age = (TextView) rowView.findViewById(R.id.age_label);
+        age.setText(getItem(position).getAge());
 
         return rowView;
     }
