@@ -11,9 +11,12 @@ import android.widget.TextView;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import io.realm.Realm;
+
 public class BulldogListActivity extends AppCompatActivity {
 
     private ListView bulldogList;
+    private Realm realm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,19 +25,9 @@ public class BulldogListActivity extends AppCompatActivity {
 
         ArrayList<Bulldog> bulldogs = new ArrayList<Bulldog>();
         bulldogList = (ListView) findViewById(R.id.bulldog_list);
+        realm = Realm.getDefaultInstance();
 
-        Bulldog bulldog1 = new Bulldog();
-        bulldog1.setAge("9");
-        bulldog1.setName("Porterhouse");
-
-        Bulldog bulldog2 = new Bulldog();
-        bulldog2.setAge("2");
-        bulldog2.setName("Drake");
-
-        bulldogs.add(bulldog1);
-        bulldogs.add(bulldog2);
-
-        final BulldogArrayAdapter adapter = new BulldogArrayAdapter(this, bulldogs);
+        final BulldogArrayAdapter adapter = new BulldogArrayAdapter(this, realm.where(Bulldog.class).findAll());
         bulldogList.setAdapter(adapter);
 
         bulldogList.setOnItemClickListener(new AdapterView.OnItemClickListener(){
@@ -42,10 +35,17 @@ public class BulldogListActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l){
                 final Bulldog bulldog = (Bulldog) adapterView.getItemAtPosition(i);
                 Intent intent = new Intent(view.getContext(), BulldogActivity.class);
-                intent.putExtra("bulldog", (Serializable) bulldog);
+                intent.putExtra("bulldog", bulldog.getId());
                 startActivity(intent);
             }
 
         });
     }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Close the Realm instance.
+        realm.close();
+    }
+
 }
