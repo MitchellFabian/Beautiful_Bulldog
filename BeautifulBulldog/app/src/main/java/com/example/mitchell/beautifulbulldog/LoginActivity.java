@@ -39,12 +39,22 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void login(final String email, final String password, final String username) {
+        if(SyncUser.currentUser() != null) {
+            SyncUser.currentUser().logout();
+
+            Realm realm = Realm.getDefaultInstance();
+            if(realm != null) {
+                realm.close();
+                Realm.deleteRealm(realm.getConfiguration());
+            }
+        }
+
         SyncCredentials myCredentials = SyncCredentials.usernamePassword(email, password, false);
         SyncUser.loginAsync(myCredentials, "http://52.205.194.154:9080", new SyncUser.Callback() {
             @Override
             public void onSuccess(SyncUser user) {
                 SyncConfiguration configuration = new SyncConfiguration
-                        .Builder(user, "realm:/52.205.194.154:9080/~/bulldog")
+                        .Builder(user, "http://52.205.194.154:9080/~/bulldog")
                         .disableSSLVerification().waitForInitialRemoteData().schemaVersion((long) 12.0).build();
                         Realm.setDefaultConfiguration(configuration);
 
@@ -61,6 +71,8 @@ public class LoginActivity extends AppCompatActivity {
                                 realm.copyToRealmOrUpdate(user);
                             }
                         });
+
+                        realm.close();
 
                         Intent intent = new Intent(getBaseContext(), BulldogListActivity.class);
                         startActivity(intent);
