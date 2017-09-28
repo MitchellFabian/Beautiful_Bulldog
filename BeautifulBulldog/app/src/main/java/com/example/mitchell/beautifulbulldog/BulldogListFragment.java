@@ -4,6 +4,7 @@ package com.example.mitchell.beautifulbulldog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,14 +69,19 @@ public class BulldogListFragment extends Fragment {
         RealmResults<Bulldog> bulldogs = mainActivity.realm.where(Bulldog.class).findAll();
         for (Bulldog bulldog : bulldogs) {
             Boolean isPresent = false;
-            for(Vote vote : bulldog.getVotes()) {
-                if(vote.getOwner().getUsername().equals(mainActivity.user.getUsername())) {
-                    isPresent = true;
+            try {
+                for (Vote vote : bulldog.getVotes()) {
+                    Log.d("Warning: OWNER USERNAME", vote.getOwner().getUsername().toString());
+                    Log.d("MYUSERNAMEINPUT", mainActivity.user.getUsername().toString());
+
+                    if (vote.getOwner().getUsername().equals(mainActivity.user.getUsername())) {
+                        isPresent = true;
+                    }
                 }
-            }
-            if(!isPresent) {
-                bulldogs2.add(bulldog);
-            }
+                if (isPresent == false) {
+                    bulldogs2.add(bulldog);
+                }
+            }catch (Exception e){ Log.d("Exception", e.getMessage()+e.getStackTrace());}
         }
         return bulldogs2;
     }
