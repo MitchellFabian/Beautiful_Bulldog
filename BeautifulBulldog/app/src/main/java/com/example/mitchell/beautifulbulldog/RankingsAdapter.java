@@ -9,18 +9,16 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import io.realm.RealmResults;
-
 /**
- * Created by Mitchell on 9/26/2017.
+ * Created by Mitchell on 9/27/2017.
  */
 
-public class BulldogArrayAdapter extends BaseAdapter {
+public class RankingsAdapter extends BaseAdapter {
     private Context mContext;
     private LayoutInflater mInflater;
     private ArrayList<Bulldog> mDataSource;
 
-    public BulldogArrayAdapter(Context context, ArrayList<Bulldog> items){
+    public RankingsAdapter(Context context, ArrayList<Bulldog> items){
         mContext = context;
         mDataSource = items;
         mInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -45,7 +43,7 @@ public class BulldogArrayAdapter extends BaseAdapter {
         name.setText(getItem(position).getName());
 
         TextView age = (TextView) rowView.findViewById(R.id.age_label);
-        age.setText(getItem(position).getAge());
+        age.setText(String.valueOf(getItem(position).getVotes().average("rating")));
 
         return rowView;
     }
@@ -53,3 +51,4 @@ public class BulldogArrayAdapter extends BaseAdapter {
 
 
 }
+
