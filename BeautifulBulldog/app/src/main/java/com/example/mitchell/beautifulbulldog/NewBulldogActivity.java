@@ -36,7 +36,7 @@ public class NewBulldogActivity extends AppCompatActivity {
         imageButton = (ImageButton) findViewById(R.id.image_button);
         realm = Realm.getDefaultInstance();
 
-        imageButton.setOnClickListener(new View.OnClickListener(){
+        saveButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
                 if(!name.getText().toString().matches("")
@@ -56,7 +56,6 @@ public class NewBulldogActivity extends AppCompatActivity {
                             bulldog.setImage(imageInByte);
                             realm.copyToRealm(bulldog);
                             finish();
-
                         }
                     });
                 }
@@ -64,7 +63,7 @@ public class NewBulldogActivity extends AppCompatActivity {
             }
         });
 
-        saveButton.setOnClickListener(new View.OnClickListener(){
+        imageButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
                 Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
