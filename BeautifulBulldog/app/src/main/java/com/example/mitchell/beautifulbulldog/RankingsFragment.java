@@ -10,6 +10,10 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -17,6 +21,7 @@ import android.widget.ListView;
 public class RankingsFragment extends Fragment {
 
     private ListView bulldogList;
+    private MainActivity mainActivity;
 
     public RankingsFragment() {
         // Required empty public constructor
@@ -31,9 +36,9 @@ public class RankingsFragment extends Fragment {
 
         bulldogList = (ListView) view.findViewById(R.id.bulldog_list);
 
-        MainActivity mainActivity = (MainActivity) this.getActivity();
+        mainActivity = (MainActivity) this.getActivity();
 
-        BulldogArrayAdapter adapter = new BulldogArrayAdapter(this.getActivity(), mainActivity.realm.where(Bulldog.class).findAll());
+        RankingsAdapter adapter = new RankingsAdapter(this.getActivity(),this.getRankings());
         bulldogList.setAdapter(adapter);
 
         bulldogList.setOnItemClickListener(new AdapterView.OnItemClickListener(){
@@ -47,6 +52,27 @@ public class RankingsFragment extends Fragment {
         });
 
         return view;
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+
+        RankingsAdapter adapter = new RankingsAdapter(this.getActivity(),this.getRankings());
+        bulldogList.setAdapter(adapter);
+    }
+
+    public ArrayList<Bulldog> getRankings(){
+        ArrayList<Bulldog> bulldogs = new ArrayList(mainActivity.realm.where(Bulldog.class).findAll());
+
+        Collections.sort(bulldogs, new Comparator<Bulldog>(){
+            @Override
+            public int compare(Bulldog bulldog, Bulldog bulldog2){
+                return((Double) bulldog2.getVotes().average("rating")).compareTo((Double) bulldog.getVotes().average("rating"));
+            }
+        });
+
+        return bulldogs;
     }
 
 }
